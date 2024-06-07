@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.VBox?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.collections.FXCollections?>
+<?import com.brunomilitzer.fxml.Person ?>
+
+<VBox alignment="CENTER" spacing="10" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="com.brunomilitzer.fxml.ComplexObjectsController">
+    <Label fx:id="selected" />
+    <Button fx:id="showSelected" text="Show Selected" onMouseClicked="#showSelected"/>
+    <Button fx:id="selectNext" text="Select Next" onMouseClicked="#selectNext" />
+    <ListView fx:id="listView">
+        <items>
+            <FXCollections fx:factory="observableArrayList">
+                <Person name="Vanessa" age="44"/>
+                <Person name="Tales" age="21"/>
+                <Person name="Bruno" age="45"/>
+            </FXCollections>
+        </items>
+    </ListView>
+</VBox>
