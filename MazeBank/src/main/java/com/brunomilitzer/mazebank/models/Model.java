@@ -1,7 +1,6 @@
 package com.brunomilitzer.mazebank.models;
 
 import com.brunomilitzer.mazebank.views.ViewFactory;
-import javafx.stage.Stage;
 
 public class Model {
 
