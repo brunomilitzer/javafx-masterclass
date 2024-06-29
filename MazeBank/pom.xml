@@ -14,6 +14,7 @@
     <junit.version>5.10.2</junit.version>
     <fontawesome.version>4.7.0-9.1.2</fontawesome.version>
     <sqlite-jdbc.version>3.46.0.0</sqlite-jdbc.version>
+    <logback-classic.version>1.4.14</logback-classic.version>
   </properties>
 
   <dependencies>
@@ -31,6 +32,11 @@
       <groupId>de.jensd</groupId>
       <artifactId>fontawesomefx-fontawesome</artifactId>
       <version>${fontawesome.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <version>${logback-classic.version}</version>
     </dependency>
     <dependency>
       <groupId>org.xerial</groupId>
