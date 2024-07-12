@@ -1,8 +1,11 @@
 package com.brunomilitzer.mazebank.models;
 
 import com.brunomilitzer.mazebank.views.ViewFactory;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDate;
 
 public class Model {
@@ -17,6 +20,7 @@ public class Model {
 
     // Admin Data Section
     private boolean adminLoginSuccessFlag;
+    private final ObservableList<Client> clients;
 
     private Model() {
         this.viewFactory = new ViewFactory();
@@ -28,6 +32,7 @@ public class Model {
 
         // Admin Data Section
         this.adminLoginSuccessFlag = false;
+        this.clients = FXCollections.observableArrayList();
     }
 
     public static synchronized Model getInstance() {
@@ -75,6 +80,10 @@ public class Model {
                 String[] dateParts = resultSet.getString("Date").split("-");
                 LocalDate date = LocalDate.of(Integer.parseInt(dateParts[0]), Integer.parseInt(dateParts[1]), Integer.parseInt(dateParts[2]));
                 this.client.dateCreatedProperty().set(date);
+                checkingAccount = getCheckingAccount(pAddress);
+                savingsAccount = getSavingsAccount(pAddress);
+                this.client.checkingAccountProperty().set(checkingAccount);
+                this.client.savingsAccountProperty().set(savingsAccount);
                 this.clientLoginSuccessFlag = true;
             }
         } catch (Exception e) {
@@ -103,5 +112,71 @@ public class Model {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public ObservableList<Client> getClients() {
+        return this.clients;
+    }
+
+    public void setClients() {
+        CheckingAccount checkingAccount;
+        SavingsAccount savingsAccount;
+        ResultSet resultSet = databaseDriver.getAllClientsData();
+
+        try {
+            while (resultSet.next()) {
+                String fName = resultSet.getString("FirstName");
+                String lName = resultSet.getString("LastName");
+                String pAddress = resultSet.getString("PayeeAddress");
+                String[] dateParts = resultSet.getString("Date").split("-");
+
+                LocalDate date = LocalDate.of(Integer.parseInt(dateParts[0]), Integer.parseInt(dateParts[1]), Integer.parseInt(dateParts[2]));
+                checkingAccount = getCheckingAccount(pAddress);
+                savingsAccount = getSavingsAccount(pAddress);
+
+                clients.add(new Client(fName, lName, pAddress, checkingAccount, savingsAccount, date));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /*
+     * Utility Methods Section
+     */
+    public CheckingAccount getCheckingAccount(String pAddress) {
+        CheckingAccount checkingAccount = null;
+        ResultSet resultSet = this.databaseDriver.getCheckingAccountData(pAddress);
+
+        try {
+            while (resultSet.next()) {
+                String number = resultSet.getString("AccountNumber");
+                int transactionLimit = (int) resultSet.getDouble("TransactionLimit");
+                double balance = resultSet.getDouble("Balance");
+                checkingAccount = new CheckingAccount(pAddress, number, balance, transactionLimit);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return checkingAccount;
+    }
+
+    public SavingsAccount getSavingsAccount(String pAddress) {
+        SavingsAccount savingsAccount = null;
+        ResultSet resultSet = this.databaseDriver.getSavingsAccountData(pAddress);
+
+        try {
+            while (resultSet.next()) {
+                String number = resultSet.getString("AccountNumber");
+                double withdrawalLimit = resultSet.getDouble("WithdrawalLimit");
+                double balance = resultSet.getDouble("Balance");
+                savingsAccount = new SavingsAccount(pAddress, number, balance, withdrawalLimit);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return savingsAccount;
     }
 }

@@ -9,12 +9,17 @@ public class SavingsAccount extends Account {
 
     private final DoubleProperty withdrawalLimit;
 
-    public SavingsAccount(String owner, String accountNumber, Double balance, Integer withdrawalLimit) {
+    public SavingsAccount(String owner, String accountNumber, Double balance, Double withdrawalLimit) {
         super(owner, accountNumber, balance);
         this.withdrawalLimit = new SimpleDoubleProperty(this, "withdrawalLimit", withdrawalLimit);
     }
 
     public DoubleProperty withdrawalLimitProperty() {
         return withdrawalLimit;
+    }
+
+    @Override
+    public String toString() {
+        return accountNumberProperty().get();
     }
 }
